@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <!-- viewport-fit=cover: Inhalt reicht bis unter Dynamic Island/Home-Indikator, Abstände kommen aus env(safe-area-inset-*) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>Kopfrechnen</title>
+  <meta name="description" content="Tägliches Kopfrechen-Training unter Zeitdruck.">
+  <meta name="theme-color" content="#eef1f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#07080d" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Home-Bildschirm-Modus (iOS) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kopfrechnen">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-touch-icon-167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-152.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="icons/apple-touch-icon-120.png">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="manifest" href="manifest.json">
+  <!-- SPLASH:START (generiert von tools/render-icons.js) -->
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-750x1334-dark.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1125x2436-dark.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-828x1792-dark.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1242x2688-dark.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1170x2532-dark.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1284x2778-dark.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1179x2556.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1179x2556-dark.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1290x2796-dark.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1206x2622.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1206x2622-dark.png" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1320x2868.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1320x2868-dark.png" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1260x2736.png" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)">
+  <link rel="apple-touch-startup-image" href="icons/splash/splash-1260x2736-dark.png" media="(device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)">
+  <!-- SPLASH:END -->
+
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <!-- Ruhiger Verlaufshintergrund, der durch die Glasflächen schimmert -->
+  <div class="backdrop" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div id="app">
+    <!-- ================= TRAINING ================= -->
+    <section id="view-train" class="view is-active" aria-labelledby="t-train">
+      <div class="view-scroll">
+        <header class="view-head">
+          <h1 id="t-train">Training</h1>
+          <div class="chip glass" id="daily-chip" title="Tage in Folge geübt">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 3.5 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3-1-3 0-6 1-9.5z"/></svg>
+            <span id="daily-count">0</span>
+          </div>
+        </header>
+
+        <div class="card glass">
+          <h2 class="card-title">Modus</h2>
+          <div class="mode-grid" id="mode-grid" role="radiogroup" aria-label="Modus"></div>
+        </div>
+
+        <div class="card glass">
+          <h2 class="card-title">Level</h2>
+          <div class="segmented" id="level-seg" role="radiogroup" aria-label="Level"></div>
+          <p class="level-desc" id="level-desc"></p>
+        </div>
+
+        <div class="summary">
+          <div class="summary-item"><span class="label">Rekord</span><span class="value" id="sum-record">–</span></div>
+          <div class="summary-item"><span class="label">Zeit</span><span class="value" id="sum-time">60 s</span></div>
+          <div class="summary-item"><span class="label">Bonus</span><span class="value" id="sum-bonus">+1 s</span></div>
+        </div>
+      </div>
+
+      <div class="dock">
+        <button class="btn btn-primary btn-xl" id="btn-start" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+          Start
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= STATISTIK ================= -->
+    <section id="view-stats" class="view" aria-labelledby="t-stats">
+      <div class="view-scroll">
+        <header class="view-head"><h1 id="t-stats">Statistik</h1></header>
+
+        <div class="tiles">
+          <div class="tile glass"><span class="label">Gelöst</span><span class="value" id="st-solved">0</span></div>
+          <div class="tile glass"><span class="label">Genauigkeit</span><span class="value" id="st-acc">–</span></div>
+          <div class="tile glass"><span class="label">Ø pro Aufgabe</span><span class="value" id="st-avg">–</span></div>
+          <div class="tile glass"><span class="label">Tage in Folge</span><span class="value" id="st-daily">0</span><span class="sub" id="st-daily-best"></span></div>
+        </div>
+
+        <div class="card glass">
+          <div class="card-head">
+            <h2 class="card-title">Score-Verlauf</h2>
+            <div class="segmented segmented-sm" id="chart-filter" role="radiogroup" aria-label="Diagrammfilter">
+              <button type="button" role="radio" data-filter="all" aria-checked="true">Alle</button>
+              <button type="button" role="radio" data-filter="current" aria-checked="false" id="chart-filter-current">Aktuell</button>
+            </div>
+          </div>
+          <div class="chart" id="chart"></div>
+        </div>
+
+        <div class="card glass">
+          <h2 class="card-title">Rekorde</h2>
+          <table class="records" id="records"></table>
+        </div>
+
+        <div class="card glass">
+          <h2 class="card-title">Letzte Runden</h2>
+          <ol class="history" id="history"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= EINSTELLUNGEN ================= -->
+    <section id="view-settings" class="view" aria-labelledby="t-settings">
+      <div class="view-scroll">
+        <header class="view-head"><h1 id="t-settings">Einstellungen</h1></header>
+
+        <div class="card glass">
+          <h2 class="card-title">Startzeit</h2>
+          <div class="segmented" id="time-seg" role="radiogroup" aria-label="Startzeit">
+            <button type="button" role="radio" data-time="30">30 s</button>
+            <button type="button" role="radio" data-time="60">60 s</button>
+            <button type="button" role="radio" data-time="90">90 s</button>
+            <button type="button" role="radio" data-time="120">120 s</button>
+            <button type="button" role="radio" data-time="custom">Frei</button>
+          </div>
+          <label class="field-row" id="custom-time-row" hidden>
+            <span>Eigene Zeit (10–600 s)</span>
+            <input class="field" id="custom-time" type="text" inputmode="numeric" pattern="[0-9]*"
+                   autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done" maxlength="3">
+          </label>
+        </div>
+
+        <div class="card glass">
+          <h2 class="card-title">Bonus pro richtiger Antwort</h2>
+          <div class="segmented" id="bonus-seg" role="radiogroup" aria-label="Bonus">
+            <button type="button" role="radio" data-bonus="0">0 s</button>
+            <button type="button" role="radio" data-bonus="1">+1 s</button>
+            <button type="button" role="radio" data-bonus="2">+2 s</button>
+            <button type="button" role="radio" data-bonus="3">+3 s</button>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="row">
+            <div>
+              <h2 class="card-title flush">Töne</h2>
+              <p class="hint">Dezentes Feedback statt Vibration. Lautlos-Schalter des iPhones gilt.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="sound-toggle" role="switch">
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+              <span class="sr-only">Töne</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <h2 class="card-title">Daten</h2>
+          <p class="hint">Alles bleibt auf diesem Gerät. Sichere es gelegentlich als Datei.</p>
+          <div class="btn-stack">
+            <button class="btn btn-glass" id="btn-export" type="button">Exportieren (JSON)</button>
+            <label class="btn btn-glass" for="import-file">Importieren …</label>
+            <input type="file" id="import-file" accept="application/json,.json" class="sr-only">
+            <button class="btn btn-danger" id="btn-reset" type="button">Alle Daten zurücksetzen</button>
+          </div>
+        </div>
+
+        <p class="footer-note">Kopfrechnen · <span id="app-version"></span></p>
+      </div>
+    </section>
+
+    <!-- ================= TAB-LEISTE ================= -->
+    <nav class="tabbar glass" aria-label="Navigation">
+      <button class="tab is-active" type="button" data-view="view-train" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
+        <span>Training</span>
+      </button>
+      <button class="tab" type="button" data-view="view-stats">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V4M16 20v-6M22 20H2" fill="none" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <span>Statistik</span>
+      </button>
+      <button class="tab" type="button" data-view="view-settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h10M19 7h2M3 17h4M13 17h8" fill="none" stroke-width="2.2" stroke-linecap="round"/><circle cx="16" cy="7" r="3"/><circle cx="10" cy="17" r="3"/></svg>
+        <span>Einstellungen</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ================= SPIEL ================= -->
+  <section id="game" class="game" hidden aria-label="Runde">
+    <div class="game-top">
+      <button class="icon-btn glass" id="btn-pause" type="button" aria-label="Pause">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+      </button>
+      <div class="game-score">
+        <span class="label">Punkte</span>
+        <span class="value" id="g-score">0</span>
+        <span class="float-pts" id="g-pts"></span>
+      </div>
+      <div class="chip glass streak-chip" id="g-streak" aria-label="Serie">×1</div>
+    </div>
+
+    <div class="game-timer">
+      <div class="ring" id="ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="ring-track" cx="60" cy="60" r="52"/>
+          <circle class="ring-bar" id="ring-bar" cx="60" cy="60" r="52"/>
+        </svg>
+        <div class="ring-label">
+          <span class="ring-sec" id="g-time" role="timer" aria-live="off">60</span>
+          <span class="float-bonus" id="g-bonus"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-task">
+      <div class="task" id="g-task" aria-live="polite">7 × 8</div>
+      <div class="solution" id="g-solution" aria-live="polite"></div>
+    </div>
+
+    <div class="game-input">
+      <input id="answer" class="answer glass" type="text"
+             inputmode="numeric" pattern="[0-9]*" autocomplete="off" autocorrect="off"
+             autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="Antwort">
+      <div class="game-actions">
+        <button class="btn btn-glass" id="btn-skip" type="button">Überspringen</button>
+        <button class="btn btn-primary" id="btn-check" type="button">Prüfen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pause -->
+  <div class="overlay" id="pause" hidden>
+    <div class="sheet glass" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+      <h2 id="pause-title">Pausiert</h2>
+      <p class="hint" id="pause-time"></p>
+      <div class="btn-stack">
+        <button class="btn btn-primary btn-xl" id="btn-resume" type="button">Weiter</button>
+        <button class="btn btn-glass" id="btn-quit" type="button">Runde beenden</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ergebnis -->
+  <div class="overlay" id="result" hidden>
+    <div class="sheet glass" role="dialog" aria-modal="true" aria-labelledby="res-title">
+      <p class="res-mode" id="res-mode"></p>
+      <h2 id="res-title" class="sr-only">Ergebnis</h2>
+      <div class="res-score" id="res-score">0</div>
+      <div class="badge" id="res-record" hidden>Neuer Rekord</div>
+      <p class="hint" id="res-best"></p>
+      <div class="res-grid">
+        <div><span class="value" id="res-correct">0</span><span class="label">Richtig</span></div>
+        <div><span class="value" id="res-acc">–</span><span class="label">Genauigkeit</span></div>
+        <div><span class="value" id="res-avg">–</span><span class="label">Ø Zeit</span></div>
+        <div><span class="value" id="res-streak">0</span><span class="label">Beste Serie</span></div>
+      </div>
+      <div class="btn-stack">
+        <button class="btn btn-primary btn-xl" id="btn-again" type="button">Nochmal</button>
+        <button class="btn btn-glass" id="btn-done" type="button">Fertig</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bestätigung zurücksetzen -->
+  <div class="overlay" id="confirm" hidden>
+    <div class="sheet glass" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+      <h2 id="confirm-title">Alle Daten löschen?</h2>
+      <p class="hint">Rekorde, Verlauf, Statistik und Einstellungen werden unwiderruflich entfernt.</p>
+      <div class="btn-stack">
+        <button class="btn btn-danger btn-xl" id="btn-confirm-reset" type="button">Löschen</button>
+        <button class="btn btn-glass" id="btn-cancel-reset" type="button">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast glass" id="toast" role="status" hidden></div>
+</body>
+</html>

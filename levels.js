@@ -12,10 +12,10 @@
 
 /** Anzeige und Punktgewicht je Level. */
 export const LEVEL_META = {
-  1: { name: 'Einsteiger', short: 'Einst.', points: 10 },
-  2: { name: 'Fortgeschritten', short: 'Fortg.', points: 20 },
-  3: { name: 'Profi', short: 'Profi', points: 35 },
-  4: { name: 'Experte', short: 'Experte', points: 50 },
+  1: { name: 'Einsteiger', points: 10, desc: 'Plus und Minus bis 20, kleines Einmaleins, 10 % und 50 %.' },
+  2: { name: 'Fortgeschritten', points: 20, desc: 'Zahlen bis 100, Mal bis 12 × 20, 5 bis 50 %.' },
+  3: { name: 'Profi', points: 35, desc: 'Dreistellig, zweistellig × einstellig, glatte Prozente.' },
+  4: { name: 'Experte', points: 50, desc: 'Große Zahlen, zweistellig × zweistellig, krumme Prozente.' },
 };
 
 /** Anzeige der Modi. "mixed" mischt alle anderen Modi im gewählten Level. */
