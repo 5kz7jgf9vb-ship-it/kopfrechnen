@@ -1,0 +1,16 @@
+{
+  "name": "kopfrechnen",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kopfrechen-Training als PWA (iPhone-optimiert)",
+  "type": "module",
+  "scripts": {
+    "serve": "node tools/serve.js",
+    "test": "node --test tests/generators.test.js tests/storage.test.js",
+    "test:e2e": "node tests/e2e.js",
+    "icons": "node tools/render-icons.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}
