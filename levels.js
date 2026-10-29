@@ -25,7 +25,7 @@ export const MODES = {
   mul: { name: 'Multiplikation', symbol: '×' },
   div: { name: 'Division', symbol: '÷' },
   pct: { name: 'Prozent', symbol: '%' },
-  mixed: { name: 'Mixed', symbol: '∗' },
+  mixed: { name: 'Mixed', symbol: 'Mix' },
 };
 
 /** Modi, aus denen "mixed" zieht. */

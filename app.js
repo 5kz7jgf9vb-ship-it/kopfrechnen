@@ -174,7 +174,9 @@ function buildTrain() {
     b.className = 'mode';
     b.setAttribute('role', 'radio');
     b.dataset.mode = key;
-    b.innerHTML = `<span class="sym" aria-hidden="true">${m.symbol}</span><span class="name">${m.name}</span>`;
+    // Mixed bekommt ein Mini-Raster aller vier Rechenzeichen statt eines Einzelsymbols.
+    const sym = key === 'mixed' ? '<span class="sym mix" aria-hidden="true"><i>+</i><i>−</i><i>×</i><i>÷</i></span>' : `<span class="sym" aria-hidden="true">${m.symbol}</span>`;
+    b.innerHTML = `${sym}<span class="name">${m.name}</span>`;
     b.addEventListener('click', () => {
       store.updateSettings({ mode: key });
       renderTrain();
@@ -269,6 +271,7 @@ function startGame() {
   $('pause').hidden = true;
   $('toast').hidden = true;
   document.body.classList.add('in-game');
+  $('game').classList.remove('ended');
   $('game').hidden = false;
   answer.value = '';
   answer.classList.remove('ok', 'bad', 'shake');
@@ -486,6 +489,7 @@ function showResult(r, isRecord, previousBest) {
   $('res-acc').textContent = fmtPct(r.correct, r.correct + r.wrong);
   $('res-avg').textContent = r.correct ? fmtSec(r.answerMs / r.correct) : '–';
   $('res-streak').textContent = String(g.bestStreak);
+  $('game').classList.add('ended'); // Spielinhalte ausblenden, Ergebnis steht allein
   $('result').hidden = false;
 }
 

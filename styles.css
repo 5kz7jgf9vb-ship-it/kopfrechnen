@@ -41,6 +41,9 @@
 
   --glass-bg: rgba(255, 255, 255, 0.52);
   --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --sheet-bg: rgba(250, 251, 255, 0.88);
+  --bar-bg: rgba(255, 255, 255, 0.8);
+  --scrim: rgba(20, 24, 40, 0.28);
   --glass-border: rgba(255, 255, 255, 0.75);
   --glass-hl: rgba(255, 255, 255, 0.95);
   --glass-lo: rgba(255, 255, 255, 0.25);
@@ -74,6 +77,9 @@
 
     --glass-bg: rgba(40, 44, 58, 0.42);
     --glass-bg-strong: rgba(48, 52, 68, 0.7);
+    --sheet-bg: rgba(34, 37, 50, 0.9);
+    --bar-bg: rgba(30, 33, 46, 0.82);
+    --scrim: rgba(0, 0, 0, 0.5);
     --glass-border: rgba(255, 255, 255, 0.12);
     --glass-hl: rgba(255, 255, 255, 0.22);
     --glass-lo: rgba(0, 0, 0, 0.25);
@@ -303,6 +309,25 @@ body.in-game #app {
   flex-direction: column;
   gap: 14px;
 }
+/* weiche Kante unten, falls Inhalt unter dem Start-Button weiterscrollt */
+#view-train .view-scroll {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent);
+}
+
+.statusbar-shade {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--sat);
+  z-index: 4;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--bg-1) 45%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+}
+
 /* Ansichten ohne Dock: Platz für die Tab-Leiste */
 #view-stats .view-scroll,
 #view-settings .view-scroll {
@@ -502,6 +527,19 @@ body.in-game #app {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.mode .sym.mix {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 5px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.05;
+  height: 29px;
+  align-content: center;
+}
+.mode .sym.mix i {
+  font-style: normal;
+}
 .mode[aria-checked='true'] {
   background: color-mix(in srgb, var(--accent) 16%, var(--selected-bg));
   box-shadow:
@@ -540,7 +578,7 @@ body.in-game #app {
     inset 0 1px 0 var(--glass-hl);
 }
 .segmented-sm button {
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 12px;
   font-size: 13px;
 }
@@ -653,7 +691,7 @@ body.in-game #app {
   display: flex;
   padding: 6px;
   gap: 4px;
-  background: var(--glass-bg-strong);
+  background: var(--bar-bg);
 }
 .tab {
   flex: 1 1 0;
@@ -830,6 +868,12 @@ body.in-game #app {
   padding: calc(var(--sat) + 6px) calc(var(--sar) + var(--gutter)) calc(var(--sab) + 12px)
     calc(var(--sal) + var(--gutter));
   overflow: hidden;
+}
+.game > * {
+  transition: opacity 0.3s ease;
+}
+.game.ended > * {
+  opacity: 0;
 }
 /* Tastatur offen: Home-Indikator liegt unter der Tastatur → kein unterer Safe-Area-Abstand nötig */
 body.kb-open .game {
@@ -1045,9 +1089,9 @@ body.kb-open .game {
   justify-content: center;
   padding: calc(var(--sat) + 16px) calc(var(--sar) + var(--gutter)) calc(var(--sab) + 16px)
     calc(var(--sal) + var(--gutter));
-  background: rgba(0, 0, 0, 0.18);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: var(--scrim);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(140%);
   animation: fade-in 0.25s ease-out;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -1061,7 +1105,7 @@ body.kb-open .game {
   flex-direction: column;
   gap: 14px;
   text-align: center;
-  background: var(--glass-bg-strong);
+  background: var(--sheet-bg);
   animation: sheet-in 0.38s cubic-bezier(0.2, 0.9, 0.3, 1.1);
   margin-top: auto;
 }
@@ -1238,7 +1282,8 @@ body.kb-open .game {
 /* =====================================================================
    Querformat (brauchbar, nicht optimiert)
    ===================================================================== */
-@media (orientation: landscape) and (max-height: 520px) {
+/* min-aspect-ratio verhindert, dass ein durch die Tastatur verkürzter Hochformat-Viewport als Querformat gilt */
+@media (orientation: landscape) and (max-height: 520px) and (min-aspect-ratio: 3/2) {
   .game {
     display: grid;
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
@@ -1267,6 +1312,41 @@ body.kb-open .game {
   }
   .mode {
     min-height: 56px;
+  }
+}
+
+/* kleine Höhen (iPhone SE, Safari mit Toolbars): kompakter, damit Start ohne Scrollen passt */
+@media (max-height: 720px) {
+  .view-scroll {
+    gap: 10px;
+    padding-top: calc(var(--sat) + 6px);
+  }
+  .view-head h1 {
+    font-size: 28px;
+  }
+  .card {
+    padding: 12px 14px;
+    gap: 9px;
+  }
+  .mode {
+    min-height: 58px;
+  }
+  .mode .sym {
+    font-size: 22px;
+  }
+  .level-desc {
+    min-height: 0;
+    font-size: 13px;
+  }
+  .summary-item .value {
+    font-size: 17px;
+  }
+  .dock {
+    padding-top: 6px;
+    padding-bottom: calc(var(--tabbar-h) + var(--tabbar-gap) + 8px);
+  }
+  .btn-xl {
+    min-height: 52px;
   }
 }
 
