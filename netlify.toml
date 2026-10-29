@@ -1,0 +1,15 @@
+# Netlify: rein statisch, kein Build-Schritt.
+[build]
+  publish = "."
+  command = ""
+
+# Service Worker und Manifest nie lange cachen, damit Updates sofort ankommen.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "no-cache"
