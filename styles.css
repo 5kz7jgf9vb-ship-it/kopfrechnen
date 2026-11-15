@@ -105,7 +105,10 @@ body {
   height: 100%;
   overflow: hidden; /* kein Seiten-Scroll → kein Bounce, kein Pull-to-Refresh */
   overscroll-behavior: none;
-  background: var(--bg-1);
+  background: var(--bg-2);
+}
+html {
+  min-height: 100lvh; /* volle Bildschirmhöhe inkl. Bereich unter Statusleiste und Home-Indikator */
 }
 
 body {
@@ -194,7 +197,9 @@ p {
 /* ---------- Hintergrund ---------- */
 .backdrop {
   position: fixed;
-  inset: 0;
+  /* bewusst größer als der Viewport: deckt auch Bereiche ab, die iOS 26 bei
+     Web-Apps manchmal außerhalb des Layout-Viewports lässt (Statusleiste, Home-Indikator) */
+  inset: -120px -40px;
   overflow: hidden;
   background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
   z-index: 0;
@@ -326,6 +331,9 @@ body.in-game #app {
   background: color-mix(in srgb, var(--bg-1) 45%, transparent);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
   backdrop-filter: blur(18px) saturate(180%);
+  /* weicher Übergang statt harter Kante */
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
 }
 
 /* Ansichten ohne Dock: Platz für die Tab-Leiste */
@@ -499,7 +507,7 @@ body.in-game #app {
   gap: 8px;
 }
 .mode {
-  min-height: 72px;
+  min-height: clamp(66px, 10svh, 100px);
   border-radius: var(--radius-m);
   background: var(--fill);
   display: flex;
@@ -514,7 +522,7 @@ body.in-game #app {
   transform: scale(0.97);
 }
 .mode .sym {
-  font-size: 26px;
+  font-size: clamp(24px, 3.8svh, 34px);
   font-weight: 500;
   line-height: 1.1;
 }
@@ -582,6 +590,10 @@ body.in-game #app {
   padding: 0 12px;
   font-size: 13px;
 }
+#level-seg button {
+  min-height: clamp(44px, 6svh, 54px);
+  font-size: 17px;
+}
 .level-desc {
   font-size: 14px;
   color: var(--text-2);
@@ -602,7 +614,7 @@ body.in-game #app {
   gap: 2px;
 }
 .summary-item .value {
-  font-size: 20px;
+  font-size: clamp(18px, 2.7svh, 24px);
   font-weight: 650;
 }
 

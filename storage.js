@@ -18,6 +18,7 @@ export function defaultData() {
       startTime: 60, // Sekunden
       bonus: 1, // Sekunden pro richtiger Antwort
       sound: true,
+      haptics: true, // Haptik bei richtigen Antworten
       mode: 'add',
       level: 1,
     },
@@ -80,6 +81,7 @@ export function migrate(raw) {
   d.settings.startTime = Math.round(num(s.startTime, 60, 10, 600));
   d.settings.bonus = num(s.bonus, 1, 0, 10);
   d.settings.sound = typeof s.sound === 'boolean' ? s.sound : true;
+  d.settings.haptics = typeof s.haptics === 'boolean' ? s.haptics : true;
   if (['add', 'sub', 'mul', 'div', 'pct', 'mixed'].includes(s.mode)) d.settings.mode = s.mode;
   if ([1, 2, 3, 4].includes(s.level)) d.settings.level = s.level;
 

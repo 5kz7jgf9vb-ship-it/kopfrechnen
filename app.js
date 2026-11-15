@@ -14,7 +14,7 @@ import { LEVEL_META, MODES } from './levels.js';
 import { generateTask, pointsFor, streakMultiplier } from './generator.js';
 import { createStore, dayKey } from './storage.js';
 
-const APP_VERSION = '1.0.0'; // bei Änderungen auch CACHE_VERSION in sw.js erhöhen
+const APP_VERSION = '1.1.0'; // bei Änderungen auch CACHE_VERSION in sw.js erhöhen
 const PRESET_TIMES = [30, 60, 90, 120];
 const RING_C = 2 * Math.PI * 52; // Umfang des Timer-Rings (r = 52)
 
@@ -115,6 +115,39 @@ const sound = {
   },
   end() {
     [523.25, 659.25, 783.99].forEach((f, i) => this.tone(f, 0.38, { gain: 0.035, delay: i * 0.09 }));
+  },
+};
+
+/* =====================================================================
+   Haptik
+   - Android & Co.: Vibration API.
+   - iPhone: Safari kennt navigator.vibrate nicht, gibt aber beim Umschalten eines
+     <input type="checkbox" switch> (iOS 18+) ein System-Haptik-Feedback. Ein
+     unsichtbarer Schalter wird dafür kurz erzeugt und über sein Label "angeklickt".
+     Das ist ein inoffizieller Weg; Apple kann ihn in neueren iOS-Versionen
+     einschränken. Fehlt die Unterstützung, passiert einfach nichts.
+   ===================================================================== */
+const haptic = {
+  tap() {
+    if (!settings().haptics) return;
+    try {
+      if (typeof navigator.vibrate === 'function') {
+        navigator.vibrate(12);
+        return;
+      }
+      const label = document.createElement('label');
+      label.setAttribute('aria-hidden', 'true');
+      label.style.display = 'none';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.setAttribute('switch', '');
+      label.append(input);
+      document.head.append(label); // im <head>: kein Layout, kein Fokuswechsel
+      label.click();
+      label.remove();
+    } catch {
+      /* Haptik ist optional */
+    }
   },
 };
 
@@ -373,6 +406,7 @@ function onCorrect() {
   answer.classList.add('ok');
   setTimeout(() => answer.classList.remove('ok'), 260);
   sound.ok();
+  haptic.tap();
   answer.value = '';
   nextTask();
   updateHud();
@@ -693,6 +727,8 @@ function renderSettings() {
     .querySelectorAll('#bonus-seg button')
     .forEach((b) => b.setAttribute('aria-checked', String(Number(b.dataset.bonus) === s.bonus)));
   $('sound-toggle').checked = s.sound;
+  $('haptic-toggle').checked = s.haptics;
+  $('display-info').textContent = displayInfo();
   $('app-version').textContent = `Version ${APP_VERSION}`;
 }
 
@@ -732,6 +768,25 @@ document.querySelectorAll('#bonus-seg button').forEach((b) =>
     renderSettings();
   }),
 );
+
+$('haptic-toggle').addEventListener('change', (e) => {
+  store.updateSettings({ haptics: e.target.checked });
+  if (e.target.checked) haptic.tap(); // Probe
+});
+
+/** Kurzinfo zur Anzeige – hilft bei der Fehlersuche, falls die App nicht den ganzen Bildschirm nutzt. */
+function displayInfo() {
+  const standalone = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+  // Safe-Area über ein Messelement auslesen (CSS-Variablen mit env() liefern nur den Rohtext).
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;visibility:hidden;padding-top:var(--sat);padding-bottom:var(--sab)';
+  document.body.append(probe);
+  const ps = getComputedStyle(probe);
+  const sat = Math.round(parseFloat(ps.paddingTop) || 0);
+  const sab = Math.round(parseFloat(ps.paddingBottom) || 0);
+  probe.remove();
+  return `${standalone ? 'Web-App' : 'Browser'} · Fenster ${innerWidth}×${innerHeight} · Bildschirm ${screen.width}×${screen.height} · Rand ${sat}/${sab}`;
+}
 
 $('sound-toggle').addEventListener('change', (e) => {
   store.updateSettings({ sound: e.target.checked });

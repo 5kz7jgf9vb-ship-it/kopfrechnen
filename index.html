@@ -173,9 +173,23 @@
               <p class="hint">Dezentes Feedback statt Vibration. Lautlos-Schalter des iPhones gilt.</p>
             </div>
             <label class="switch">
-              <input type="checkbox" id="sound-toggle" role="switch">
+              <input type="checkbox" id="sound-toggle" switch>
               <span class="switch-track"><span class="switch-thumb"></span></span>
               <span class="sr-only">Töne</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="card glass">
+          <div class="row">
+            <div>
+              <h2 class="card-title flush">Haptik</h2>
+              <p class="hint">Kurzes Tippen bei jeder richtigen Antwort (iPhone mit iOS 18 oder neuer).</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="haptic-toggle" switch>
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+              <span class="sr-only">Haptik</span>
             </label>
           </div>
         </div>
@@ -191,7 +205,7 @@
           </div>
         </div>
 
-        <p class="footer-note">Kopfrechnen · <span id="app-version"></span></p>
+        <p class="footer-note">Kopfrechnen · <span id="app-version"></span><br><span id="display-info"></span></p>
       </div>
     </section>
 

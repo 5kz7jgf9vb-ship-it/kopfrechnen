@@ -42,6 +42,12 @@ test('Einstellungen werden validiert und gespeichert', () => {
   assert.equal(createStore(b).data.settings.bonus, 2);
 });
 
+test('Haptik: Standard an, Altdaten ohne Feld bekommen Standard', () => {
+  assert.equal(defaultData().settings.haptics, true);
+  assert.equal(migrate({ version: 1, settings: { sound: false } }).settings.haptics, true);
+  assert.equal(migrate({ version: 1, settings: { haptics: false } }).settings.haptics, false);
+});
+
 test('Highscore und Rekord-Erkennung', () => {
   const s = createStore(memBackend());
   assert.equal(s.recordRound(round({ score: 100 })).isRecord, true);

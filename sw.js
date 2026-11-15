@@ -5,7 +5,7 @@
  * werden frisch in einen neuen Cache geladen → die App zeigt "Neue Version verfügbar"
  * → nach Tipp auf "Aktualisieren" übernimmt der neue Worker und alte Caches werden gelöscht.
  */
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.1.0';
 const CACHE = `kopfrechnen-${CACHE_VERSION}`;
 
 const ASSETS = [

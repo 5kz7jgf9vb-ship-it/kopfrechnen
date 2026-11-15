@@ -16,6 +16,7 @@ await mkdir(SHOTS, { recursive: true });
 
 /* Geräteprofile: Home-Bildschirm-Modus (volle Höhe, Safe-Areas) und Safari (Toolbars, Tastatur mit Zubehörleiste). */
 const PROFILES = [
+  { name: '18pro-standalone', device: 'iPhone 15 Pro', vp: [402, 874], safe: { t: 62, b: 34 }, kb: 291 },
   { name: '15pro-standalone', device: 'iPhone 15 Pro', vp: [393, 852], safe: { t: 59, b: 34 }, kb: 291 },
   { name: '13mini-standalone', device: 'iPhone 13 Mini', vp: [375, 812], safe: { t: 50, b: 34 }, kb: 291 },
   { name: 'se-standalone', device: 'iPhone SE (3rd gen)', vp: [375, 667], safe: { t: 20, b: 0 }, kb: 216 },
@@ -136,7 +137,8 @@ for (const profile of PROFILES) {
     await layoutChecks(page, profile, `${label} Statistik`);
     await page.click('.tab[data-view="view-settings"]');
     await layoutChecks(page, profile, `${label} Einstellungen`);
-    if (profile.name === '15pro-standalone') await shot(page, `${profile.name}-${scheme}-3-settings.png`);
+    if (profile.name.startsWith('18pro')) await shot(page, `${profile.name}-${scheme}-3-settings.png`);
+    check(await page.locator('#haptic-toggle').isChecked(), `${label}: Haptik nicht standardmäßig an`);
     await page.click('.tab[data-view="view-train"]');
 
     // --- Runde starten: Fokus muss sofort im Eingabefeld liegen ---
@@ -152,7 +154,9 @@ for (const profile of PROFILES) {
 
     // Tastatur simulieren: sichtbarer Bereich wird um die Tastaturhöhe kleiner.
     await page.setViewportSize({ width: W, height: H - profile.kb });
-    await page.waitForTimeout(200);
+    // warten, bis app.js die neue sichtbare Höhe übernommen hat (--vvh)
+    await page.waitForFunction((h) => getComputedStyle(document.documentElement).getPropertyValue('--vvh').trim() === `${h}px`, H - profile.kb);
+    await page.waitForTimeout(100);
     await layoutChecks(page, { ...profile, safe: { ...profile.safe, b: 0 } }, `${label} Spiel+Tastatur`, { bottomLimit: H - profile.kb });
     const vis = await page.evaluate(() =>
       ['#g-task', '#answer', '#btn-check', '#btn-skip', '#g-time', '#g-score'].map((s) => {
@@ -176,6 +180,8 @@ for (const profile of PROFILES) {
     const t1 = Number(await page.textContent('#g-time'));
     check(t1 >= t0, `${label}: +1s Bonus nicht sichtbar (${t0} → ${t1})`);
     check(await page.evaluate(() => document.getElementById('answer').value === ''), `${label}: Eingabe nicht geleert`);
+    check(await page.evaluate(() => document.activeElement?.id === 'answer'), `${label}: Fokus nach richtiger Antwort (Haptik) verloren`);
+    check(await page.evaluate(() => !document.querySelector('head label, body > label')), `${label}: Haptik-Element bleibt im DOM zurück`);
 
     // Falsche Antwort: Aufgabe bleibt, Shake
     const wrong = String((s1.task.answer + 1) % 10 ** String(s1.task.answer).length).padStart(String(s1.task.answer).length, '1');
