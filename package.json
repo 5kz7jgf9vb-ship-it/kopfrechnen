@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "serve": "node tools/serve.js",
-    "test": "node --test tests/generators.test.js tests/storage.test.js",
+    "test": "node --test tests/generators.test.js tests/storage.test.js tests/benchmarks.test.js",
     "test:e2e": "node tests/e2e.js",
     "icons": "node tools/render-icons.js"
   },

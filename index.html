@@ -124,6 +124,17 @@
         </div>
 
         <div class="card glass">
+          <div class="card-head">
+            <h2 class="card-title">Im Vergleich</h2>
+            <span class="hint" id="st-bench-cat"></span>
+          </div>
+          <div class="bench-chart" id="st-bench-chart"></div>
+          <p class="bench-note" id="st-bench-note"></p>
+          <table class="records pct-table" id="pct-table"></table>
+          <p class="hint small">Perzentil = Anteil Erwachsener, die langsamer rechnen als du (gemessen in Sekunden pro richtiger Antwort). Die Referenz ist eine geschätzte Verteilung aus Studien zur Rechengeschwindigkeit, keine Live-Daten anderer Spieler.</p>
+        </div>
+
+        <div class="card glass">
           <h2 class="card-title">Rekorde</h2>
           <table class="records" id="records"></table>
         </div>
@@ -289,6 +300,14 @@
       <div class="res-score" id="res-score">0</div>
       <div class="badge" id="res-record" hidden>Neuer Rekord</div>
       <p class="hint" id="res-best"></p>
+      <div class="bench" id="res-bench">
+        <div class="bench-top">
+          <span class="bench-pct" id="res-pct">–</span>
+          <span class="bench-text"><strong id="res-tier"></strong><span id="res-pct-text"></span></span>
+        </div>
+        <div class="bench-chart" id="res-bench-chart"></div>
+        <p class="bench-note" id="res-bench-note"></p>
+      </div>
       <div class="res-grid">
         <div><span class="value" id="res-correct">0</span><span class="label">Richtig</span></div>
         <div><span class="value" id="res-acc">–</span><span class="label">Genauigkeit</span></div>

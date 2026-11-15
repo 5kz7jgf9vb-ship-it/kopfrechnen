@@ -13,8 +13,9 @@
 import { LEVEL_META, MODES } from './levels.js';
 import { generateTask, pointsFor, streakMultiplier } from './generator.js';
 import { createStore, dayKey } from './storage.js';
+import { percentile, reference, secondsForPercentile, secondsPerCorrect, tier } from './benchmarks.js';
 
-const APP_VERSION = '1.1.0'; // bei Änderungen auch CACHE_VERSION in sw.js erhöhen
+const APP_VERSION = '1.2.0'; // bei Änderungen auch CACHE_VERSION in sw.js erhöhen
 const PRESET_TIMES = [30, 60, 90, 120];
 const RING_C = 2 * Math.PI * 52; // Umfang des Timer-Rings (r = 52)
 
@@ -523,8 +524,158 @@ function showResult(r, isRecord, previousBest) {
   $('res-acc').textContent = fmtPct(r.correct, r.correct + r.wrong);
   $('res-avg').textContent = r.correct ? fmtSec(r.answerMs / r.correct) : '–';
   $('res-streak').textContent = String(g.bestStreak);
+  renderResultBenchmark(r);
   $('game').classList.add('ended'); // Spielinhalte ausblenden, Ergebnis steht allein
   $('result').hidden = false;
+}
+
+/* =====================================================================
+   Vergleich mit der Referenzverteilung (benchmarks.js)
+   ===================================================================== */
+const fmtPctl = (p) => (p >= 99 || p < 1 ? nf1.format(p) : String(Math.round(p)));
+const perMin = (sec) => nf.format(Math.round(60 / sec));
+
+function renderResultBenchmark(r) {
+  const sec = secondsPerCorrect(r);
+  const p = percentile(r.mode, r.level, sec);
+  const { t50 } = reference(r.mode, r.level);
+  $('res-pct').textContent = `${fmtPctl(p)}.`;
+  $('res-tier').textContent = tier(p);
+  $('res-pct-text').textContent = ` · schneller als ${fmtPctl(p)} % der Erwachsenen`;
+  $('res-bench-note').textContent = Number.isFinite(sec)
+    ? `Dein Tempo: ${nf1.format(sec)} s pro Lösung (${perMin(sec)}/min) · Median: ${nf1.format(t50)} s`
+    : 'Keine richtige Antwort – kein Tempo messbar';
+  renderBell($('res-bench-chart'), r.mode, r.level, [{ sec, label: 'Du' }]);
+}
+
+/** Durchschnittliche Sekunden pro richtiger Antwort über mehrere Runden. */
+function avgSecPerCorrect(rounds) {
+  const correct = rounds.reduce((a, h) => a + h.correct, 0);
+  return correct ? rounds.reduce((a, h) => a + h.duration, 0) / 1000 / correct : Infinity;
+}
+
+/**
+ * Glockenkurve der Referenz (x-Achse: Lösungen pro Minute, logarithmisch).
+ * Die erste Markierung wird links schattiert (= langsamere Erwachsene).
+ */
+function renderBell(el, mode, level, marks = []) {
+  const { t50, sigma } = reference(mode, level);
+  const W = 300;
+  const H = 94;
+  const top = 18;
+  const base = 64;
+  const mu = Math.log(60 / t50);
+  const lo = mu - 2.8 * sigma;
+  const hi = mu + 2.8 * sigma;
+  const X = (u) => ((u - lo) / (hi - lo)) * W;
+  const Y = (u) => base - Math.exp(-((u - mu) ** 2) / (2 * sigma * sigma)) * (base - top);
+  const U = (sec) => Math.min(hi, Math.max(lo, Math.log(60 / sec)));
+  const pts = [];
+  for (let i = 0; i <= 90; i++) {
+    const u = lo + (i / 90) * (hi - lo);
+    pts.push(`${i ? 'L' : 'M'}${X(u).toFixed(1)} ${Y(u).toFixed(1)}`);
+  }
+  const curve = pts.join(' ');
+  const area = `${curve} L${W} ${base} L0 ${base} Z`;
+  const clipId = `${el.id}-clip`;
+
+  const valid = marks.filter((m) => Number.isFinite(m.sec) && m.sec > 0);
+  const shadeX = marks[0] && valid[0] === marks[0] ? X(U(marks[0].sec)) : 0;
+
+  const ticks = [
+    [50, 'Median'],
+    [90, 'Top 10 %'],
+    [99, 'Top 1 %'],
+  ]
+    .map(([p, name]) => {
+      const sec = secondsForPercentile(mode, level, p);
+      const x = X(U(sec));
+      return (
+        `<line class="bell-tick" x1="${x}" x2="${x}" y1="${Y(U(sec)).toFixed(1)}" y2="${base}"/>` +
+        `<text class="bell-tick-label" x="${x}" y="${base + 13}" text-anchor="middle">${name}</text>` +
+        `<text class="bell-tick-value" x="${x}" y="${base + 25}" text-anchor="middle">${perMin(sec)}/min</text>`
+      );
+    })
+    .join('');
+
+  const xs = valid.map((m) => Math.min(W - 2, Math.max(2, X(U(m.sec)))));
+  const close = xs.length === 2 && Math.abs(xs[0] - xs[1]) < 28;
+  const markSvg = valid
+    .map((m, i) => {
+      const u = U(m.sec);
+      const x = xs[i];
+      let anchor = x < 20 ? 'start' : x > W - 20 ? 'end' : 'middle';
+      let lx = x;
+      if (close) {
+        // die schnellere Markierung (größeres x) bekommt ihre Beschriftung rechts, die andere links
+        const right = x > xs[1 - i] || (x === xs[1 - i] && i === 1);
+        anchor = right ? 'start' : 'end';
+        lx = right ? x + 3 : x - 3;
+      }
+      const alt = i ? ' alt' : '';
+      return (
+        `<line class="bell-mark${alt}" x1="${x}" x2="${x}" y1="${top - 4}" y2="${base}"/>` +
+        `<circle class="bell-dot${alt}" cx="${x}" cy="${Y(u).toFixed(1)}" r="4.5"/>` +
+        `<text class="bell-mark-label${alt}" x="${lx}" y="${top - 8}" text-anchor="${anchor}">${m.label}</text>`
+      );
+    })
+    .join('');
+
+  el.innerHTML = `
+    <svg viewBox="0 -2 ${W} ${H}" role="img" aria-label="Verteilung der Erwachsenen nach Lösungen pro Minute">
+      <defs><clipPath id="${clipId}"><rect x="0" y="-2" width="${shadeX}" height="${H}"/></clipPath></defs>
+      <path class="bell-area" d="${area}"/>
+      <path class="bell-shade" d="${area}" clip-path="url(#${clipId})"/>
+      <path class="bell-curve" d="${curve}"/>
+      <line class="bell-base" x1="0" x2="${W}" y1="${base}" y2="${base}"/>
+      ${ticks}
+      ${markSvg}
+    </svg>`;
+}
+
+/** Vergleichskarte in der Statistik: aktuelle Kategorie als Kurve, alle gespielten als Tabelle. */
+function renderStatsBenchmark(history) {
+  const s = settings();
+  $('st-bench-cat').textContent = `${MODES[s.mode].name} · L${s.level}`;
+  const own = history.filter((h) => h.mode === s.mode && h.level === s.level && h.correct > 0);
+  if (own.length) {
+    const recent = own.slice(-5);
+    const avgSec = avgSecPerCorrect(recent);
+    const bestSec = Math.min(...own.map(secondsPerCorrect));
+    renderBell($('st-bench-chart'), s.mode, s.level, [
+      { sec: avgSec, label: 'Ø' },
+      { sec: bestSec, label: 'Best' },
+    ]);
+    const pAvg = percentile(s.mode, s.level, avgSec);
+    $('st-bench-note').textContent =
+      `Ø letzte ${recent.length}: ${fmtPctl(pAvg)}. Perzentil (${tier(pAvg)}) · ` +
+      `Bestwert: ${fmtPctl(percentile(s.mode, s.level, bestSec))}. Perzentil`;
+  } else {
+    renderBell($('st-bench-chart'), s.mode, s.level, []);
+    $('st-bench-note').textContent = 'Spiele eine Runde in dieser Kategorie, um dich einzuordnen.';
+  }
+
+  // Tabelle: alle gespielten Kategorien, zuletzt gespielte zuerst
+  const table = $('pct-table');
+  table.replaceChildren();
+  const keys = [...new Set(history.filter((h) => h.correct > 0).reverse().map((h) => `${h.mode}-${h.level}`))];
+  if (!keys.length) return;
+  const head = table.insertRow();
+  for (const label of ['Kategorie', 'Best', 'Ø 5']) {
+    const th = document.createElement('th');
+    th.textContent = label;
+    head.append(th);
+  }
+  for (const key of keys) {
+    const [mode, lvlText] = key.split('-');
+    const lvl = Number(lvlText);
+    if (!MODES[mode] || !LEVEL_META[lvl]) continue;
+    const rounds = history.filter((h) => h.mode === mode && h.level === lvl && h.correct > 0);
+    const row = table.insertRow();
+    row.insertCell().textContent = `${MODES[mode].name} L${lvl}`;
+    row.insertCell().textContent = `${fmtPctl(percentile(mode, lvl, Math.min(...rounds.map(secondsPerCorrect))))}.`;
+    row.insertCell().textContent = `${fmtPctl(percentile(mode, lvl, avgSecPerCorrect(rounds.slice(-5))))}.`;
+  }
 }
 
 /* --- Ereignisse im Spiel --- */
@@ -595,6 +746,7 @@ function renderStats() {
     .forEach((b) => b.setAttribute('aria-checked', String(b.dataset.filter === chartFilter)));
   const rounds = chartFilter === 'all' ? d.history : d.history.filter((h) => h.mode === s.mode && h.level === s.level);
   renderChart(rounds.slice(-30));
+  renderStatsBenchmark(d.history);
   renderRecords();
   renderHistory(d.history.slice(-20).reverse());
 }

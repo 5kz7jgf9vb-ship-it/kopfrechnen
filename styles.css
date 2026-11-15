@@ -1089,6 +1089,113 @@ body.kb-open .game {
   animation: float-up-c 0.9s ease-out forwards;
 }
 
+/* ---------- Vergleich mit Referenzverteilung ---------- */
+.bench {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 12px 8px;
+  border-radius: var(--radius-m);
+  background: var(--fill);
+  text-align: left;
+}
+.bench-top {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.bench-pct {
+  flex: none;
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.bench-text {
+  font-size: 14px;
+  line-height: 1.25;
+  color: var(--text-2);
+}
+.bench-text strong {
+  color: var(--text);
+}
+.bench-note {
+  font-size: 12px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+.bench-chart svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.bell-area {
+  fill: var(--track);
+}
+.bell-shade {
+  fill: color-mix(in srgb, var(--accent) 38%, transparent);
+}
+.bell-curve {
+  fill: none;
+  stroke: color-mix(in srgb, var(--text) 35%, transparent);
+  stroke-width: 1.5;
+}
+.bell-base {
+  stroke: var(--track);
+  stroke-width: 1;
+}
+.bell-tick {
+  stroke: color-mix(in srgb, var(--text) 30%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.bell-tick-label,
+.bell-tick-value {
+  font-size: 9px;
+  fill: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.bell-tick-label {
+  font-weight: 600;
+  fill: var(--text-2);
+}
+.bell-mark {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.bell-dot {
+  fill: var(--accent);
+  stroke: var(--bg-1);
+  stroke-width: 2;
+}
+.bell-mark-label {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--accent);
+}
+.bell-mark.alt {
+  stroke: var(--warn);
+  stroke-dasharray: 3 2;
+}
+.bell-dot.alt {
+  fill: var(--warn);
+}
+.bell-mark-label.alt {
+  fill: var(--warn);
+}
+.pct-table:empty {
+  display: none;
+}
+.records.pct-table th:first-child,
+.records.pct-table td:first-child {
+  width: 60%;
+}
+.hint.small {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
 /* =====================================================================
    Overlays (Pause, Ergebnis, Bestätigung) und Toast
    ===================================================================== */
@@ -1097,7 +1204,7 @@ body.kb-open .game {
   inset: 0;
   z-index: 20;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start; /* mit margin-top:auto am Sheet unten ausgerichtet, bei Überlänge scrollbar */
   justify-content: center;
   padding: calc(var(--sat) + 16px) calc(var(--sar) + var(--gutter)) calc(var(--sab) + 16px)
     calc(var(--sal) + var(--gutter));
@@ -1120,6 +1227,10 @@ body.kb-open .game {
   background: var(--sheet-bg);
   animation: sheet-in 0.38s cubic-bezier(0.2, 0.9, 0.3, 1.1);
   margin-top: auto;
+}
+.sheet > *,
+.sheet .btn {
+  flex-shrink: 0; /* nie unter die Mindesthöhe stauchen – lieber scrollen */
 }
 .sheet h2 {
   font-size: 22px;
@@ -1359,6 +1470,50 @@ body.kb-open .game {
   }
   .btn-xl {
     min-height: 52px;
+  }
+}
+
+/* Ergebnis auf kleinen Displays kompakter */
+@media (max-height: 760px) {
+  .sheet {
+    gap: 9px;
+    padding: 18px 16px 16px;
+  }
+  .res-score {
+    font-size: 46px;
+  }
+  .res-mode {
+    font-size: 12px;
+  }
+  .sheet {
+    padding-top: 14px;
+  }
+  .bench {
+    padding: 8px 10px 4px;
+  }
+  .bench-pct {
+    font-size: 24px;
+  }
+  .res-grid {
+    padding: 8px 4px;
+  }
+  .sheet .btn-xl {
+    min-height: 50px;
+  }
+  .sheet .btn {
+    min-height: 48px;
+  }
+  /* Buttons nebeneinander statt untereinander: spart eine Zeile */
+  .sheet .btn-stack {
+    flex-direction: row;
+  }
+  .sheet .btn-stack .btn {
+    flex: 1 1 0;
+    width: auto;
+    font-size: 17px;
+  }
+  .bench-chart svg {
+    max-height: 82px;
   }
 }
 

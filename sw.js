@@ -5,7 +5,7 @@
  * werden frisch in einen neuen Cache geladen → die App zeigt "Neue Version verfügbar"
  * → nach Tipp auf "Aktualisieren" übernimmt der neue Worker und alte Caches werden gelöscht.
  */
-const CACHE_VERSION = 'v1.1.0';
+const CACHE_VERSION = 'v1.2.0';
 const CACHE = `kopfrechnen-${CACHE_VERSION}`;
 
 const ASSETS = [
@@ -16,6 +16,7 @@ const ASSETS = [
   './levels.js',
   './generator.js',
   './storage.js',
+  './benchmarks.js',
   './manifest.json',
   './icons/icon.svg',
   './icons/favicon-32.png',

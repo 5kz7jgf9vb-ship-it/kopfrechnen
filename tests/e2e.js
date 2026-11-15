@@ -59,6 +59,12 @@ async function newPage(profile, colorScheme, extra = {}) {
 
 /** Prüft: kein horizontales Scrollen, sichtbare Bedienelemente innerhalb der Safe-Area, Touch-Ziele ≥ 44 pt. */
 async function layoutChecks(page, profile, label, { bottomLimit } = {}) {
+  // laufende Ein-/Ausblend-Animationen abwarten (endlose Hintergrund-Animationen ausgenommen)
+  await page.evaluate(() =>
+    Promise.all(
+      document.getAnimations().filter((a) => a.effect?.getTiming().iterations !== Infinity).map((a) => a.finished.catch(() => {})),
+    ),
+  );
   const r = await page.evaluate(
     ({ safe, bottomLimit }) => {
       const W = window.innerWidth;
@@ -224,6 +230,8 @@ for (const profile of PROFILES) {
     check(await page.locator('#result:not([hidden])').count() === 1, `${label}: Ergebnis-Screen fehlt`);
     await layoutChecks(page, profile, `${label} Ergebnis`);
     check((await page.textContent('#res-record')) && (await page.locator('#res-record:not([hidden])').count()) === 1, `${label}: Rekord-Hinweis fehlt`);
+    check(/^\d+(,\d)?\.$/.test(await page.textContent('#res-pct')), `${label}: Perzentil fehlt im Ergebnis`);
+    check(await page.locator('#res-bench-chart svg .bell-mark').count() === 1, `${label}: Verteilungskurve ohne Markierung`);
     await shot(page, `${profile.name}-${scheme}-4-result.png`);
     await page.click('#btn-again');
     check(await page.evaluate(() => document.activeElement?.id === 'answer' && window.__kopfrechnen.state().running), `${label}: "Nochmal" startet nicht mit Fokus`);
@@ -234,6 +242,8 @@ for (const profile of PROFILES) {
     await page.click('.tab[data-view="view-stats"]');
     check(await page.locator('#chart svg').count() === 1, `${label}: Diagramm fehlt`);
     check(await page.locator('#history li').count() === 1, `${label}: Verlauf hat nicht genau 1 Eintrag`);
+    check(await page.locator('#pct-table tr').count() === 2, `${label}: Perzentil-Tabelle fehlt`);
+    check(await page.locator('#st-bench-chart .bell-mark').count() === 2, `${label}: Vergleichskurve ohne Ø/Best`);
     await layoutChecks(page, profile, `${label} Statistik gefüllt`);
     await shot(page, `${profile.name}-${scheme}-5-stats.png`);
 
